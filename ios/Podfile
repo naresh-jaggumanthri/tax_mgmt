@@ -12,6 +12,10 @@ target 'tax_mgmt' do
 
   pod 'react-native-sms', :path => '../node_modules/react-native-sms'
 
+  pod 'react-native-config', :path => '../node_modules/react-native-config'
+
+  pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
+
   target 'tax_mgmtTests' do
     inherit! :complete
     # Pods for testing
