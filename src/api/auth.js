@@ -245,6 +245,7 @@ export async function saveInvoice(id,data){
              //form_data.append('password', password);
  
          let res = await axios.post(`${c.USER_INFO}`, form_data, options);
+       
          console.log("user Info response====>",JSON.stringify(res));
          return res.data;
      }catch (e) {

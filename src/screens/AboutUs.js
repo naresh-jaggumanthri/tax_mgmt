@@ -8,8 +8,9 @@ import {
     StyleSheet ,
     StatusBar,
     Dimensions,
-    Alert,Image
+    Alert,Image, FlatList
 } from 'react-native';
+import {ListItem, Avatar} from 'react-native-elements';
 import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import FontAwesome from 'react-native-vector-icons/FontAwesome';
@@ -35,6 +36,7 @@ import Config from 'react-native-config';
 import { useAuth } from "../providers/auth";
 import Loader from '../components/Loader';
 import * as api from "../api/auth";
+import {Searchbar} from 'react-native-paper';
 
 const AboutUs = ({navigation}) => {
  
@@ -64,6 +66,10 @@ const AboutUs = ({navigation}) => {
      
       
     ]);
+    const [mydata, setMydata] = useState([]);
+    const [value, setValue] = useState('');
+    const [isInitiated, setInitiated] = useState(true);
+    
     bs = React.createRef();
     fall = new Animated.Value(1);
     const takePhotoFromCamera = () => {
@@ -167,6 +173,7 @@ onUploadImage=async()=>{
      }else if(itemId==2){
       try {
         //updateUser(response.user);
+        setLoading(true);
         let response = await api.saveBankStatement(state.user.id, image);
       if(response.status=="success")
       {
@@ -188,6 +195,7 @@ onUploadImage=async()=>{
      }else if(itemId==3) {
       try {
         //updateUser(response.user);
+        setLoading(true);
         let response = await api.saveOtherDocument(state.user.id, image);
         if(response.status=="success")
         {
@@ -207,6 +215,107 @@ onUploadImage=async()=>{
     
  
 }
+
+
+
+const makeRemoteRequest = async () => {
+  let invoicedata = [];
+
+  
+  setLoading(true);
+  let res = await api.getHistoryItem(state.user.id, 'Invoice');
+  if (res && res.body != null) {
+    let newFile = res.body.map((file) => {
+      return {...file, key4: 'Invoice'};
+    });
+    console.log(JSON.stringify(newFile));
+    invoicedata = newFile;
+  } else if (res.body == '') {
+    alert('Something went wrong');
+  }
+  let res2 = await api.getHistoryItem(state.user.id, 'BankStatement');
+  if (res2 && res2.body != null) {
+    let newFile = res2.body.map((file) => {
+      return {...file, key4: 'BankStatement'};
+    });
+    console.log(JSON.stringify(newFile));
+    invoicedata = invoicedata.concat(newFile);
+  } else if (res2.body == '') {
+    alert('Something went wrong to retrieve bank statements');
+  }
+
+  let res3 = await api.getHistoryItem(state.user.id, 'OtherDocument');
+  if (res3 && res3.body != null) {
+    let newFile = res3.body.map((file) => {
+      return {...file, key4: 'OtherDocument'};
+    });
+    console.log(JSON.stringify(newFile));
+    invoicedata = invoicedata.concat(newFile);
+  } else if (res3.body == '') {
+    alert('Something went wrong to retrieve other documents');
+  }
+
+  setMydata(invoicedata);
+
+  setInitiated(false);
+  setLoading(false);
+};
+const searchFilterFunction = (text) => {
+  setValue(text);
+  setInitiated(false);
+
+  const newData = mydata.filter((item) => {
+    const itemData = `${item.docname.toUpperCase()} ${
+      item.created
+    } ${item.key4.toUpperCase()}`;
+    const textData = text.toUpperCase();
+
+    return itemData.indexOf(textData) > -1;
+  });
+
+  // alert(text);
+  if (text == null || text == '') {
+    setInitiated(true);
+  } else {
+    setMydata(newData);
+  }
+};
+
+const renderSeparator = () => {
+  return (
+    <View
+      style={{
+        height: 1,
+        width: '86%',
+        backgroundColor: '#CED0CE',
+        marginLeft: '14%',
+      }}
+    />
+  );
+};
+const onChangeSearch = (query) => searchFilterFunction(query);
+const renderHeaderList = () => {
+  if (isInitiated) {
+    makeRemoteRequest();
+  }
+  return (
+    <Searchbar
+      placeholder="Search"
+      onChangeText={onChangeSearch}
+      value={value}
+    />
+  );
+};
+
+const itemOnclick = (image) => {
+  // var newString = image.split("/").pop();
+
+  //var final_url='http://sravyabiotech.com/mobileuser/uploads/users/'+newString;
+  //alert(final_url);
+ // console.log(image);
+ // setImg(image);
+  //setModalVisible(true);
+};
 
     
     return (
@@ -247,6 +356,7 @@ onUploadImage=async()=>{
                 onPress={() => {
                  // setImage(exampleGIF);
                  this.onUploadImage();
+                 setLoading(true);
                   
                 }}
               />:<DialogButton/>)}
@@ -330,44 +440,58 @@ onUploadImage=async()=>{
            </Paragraph>
            </ScrollView>
         </View>
-        <Animatable.View 
-            animation="fadeInUpBig"
-            style={[styles.footer, {
-                backgroundColor: colors.background
-            }]}
-        >
-           
-            
-           <FlatGrid
-      itemDimension={130}
-      data={items}
-      style={styles.gridView}
-      // staticDimension={300}
-      // fixed
-      spacing={10}
-      renderItem={({ item }) => (
-        
-        <TouchableOpacity style={[styles.itemContainer, { backgroundColor: item.code }]}
-        onPress={()=>{
-          if(item.id==1)
-          {
-          onclickImage(item.id);
-          }else if(item.id==2)
-          {
-            onclickImage(item.id);
-          }else if(item.id==3){
-            onclickImage(item.id);
-          }
-        }}
-        >
-          <Text style={styles.itemName}>{item.name}</Text>
-          {/*<Text style={styles.itemCode}>{item.code}</Text>*/}
-        </TouchableOpacity>
-      )}
-    />
-           
-            
-        </Animatable.View>
+        <View style={{flex: 1, flexDirection: 'column'}}>
+      <Loader loading={loading}></Loader>
+     {/* <Dialog
+        visible={modalVisible}
+        dialogAnimation={
+          new ScaleAnimation({
+            initialValue: 0, // optional
+            useNativeDriver: true, // optional
+          })
+        }
+        onTouchOutside={() => {
+          setModalVisible(false);
+        }}>
+        <DialogContent>
+          <ImageModal
+            resizeMode="contain"
+            imageBackgroundColor="#000000"
+            style={{
+              width: 310,
+              height: 310,
+              alignItems: 'center',
+              justifyContent: 'center',
+            }}
+            source={{
+              uri: img,
+            }}
+          />
+        </DialogContent>
+      </Dialog> */}
+
+      <FlatList
+        data={mydata}
+        renderItem={({item}) => (
+          <ListItem bottomDivider>
+            <Avatar source={{uri: item.Path}} />
+            <ListItem.Content
+              onTouchStart={() => {
+                itemOnclick(item.Path);
+              }}>
+              <ListItem.Title>{item.key4}</ListItem.Title>
+              <ListItem.Subtitle>{item.created}</ListItem.Subtitle>
+              <Text style={{paddingLeft: 10, color: 'grey'}}>
+                {item.docname}
+              </Text>
+            </ListItem.Content>
+            <ListItem.Chevron />
+          </ListItem>
+        )}
+        keyExtractor={(item) => item.created}
+        ItemSeparatorComponent={renderSeparator}
+        ListHeaderComponent={renderHeaderList}></FlatList>
+    </View>
       </View>
     );
 };

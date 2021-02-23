@@ -68,15 +68,20 @@ const HomeScreen = ({navigation,route}) => {
     ]);
     const rdata = [
       {
-        label: 'Normal'
+        label: 'Invoice'
        },
        {
-        label: 'Whatsapp'
+        label: 'Bank Statement'
+       },
+       {
+        label: 'Other Document'
        }
       ];
       const [error, setError] = useState(null);
       const [cellNumber, setCellNumber] = useState('9876543210');
       const [whatsAppMessage, setWhatsAppMessage] = useState('test msg');
+      const [selectDoc,setSelectDoc]=useState(false);
+      const [doctype,setDoctype]=useState(1);
     bs2 = React.createRef();
     fall2 = new Animated.Value(1);
     const takePhotoFromCamera = () => {
@@ -152,7 +157,8 @@ const HomeScreen = ({navigation,route}) => {
     const onclickImage =() =>{
       //Alert.alert('img');
       //setenableView(false);
-      this.bs2.current.snapTo(0);
+      setSelectDoc(true);
+      
     }
    const makeCall = (number) => {
       const args = {
@@ -200,22 +206,21 @@ const sendWMsg = () => {
 const  onSendMsg=(checked)=>{
   if(checked==='first')
 {
-  SendSMS.send({
-    body: 'Please follow us on JASWAL & CO',
-    recipients: ['0987654321'],
-    successTypes: ['sent', 'queued']
-}, (completed, cancelled, error) => {
-    if(completed){
-      Alert.alert('SMS Sent Successfully.')
-    }else if(cancelled){
-      console.log('SMS Sent Cancelled.');
-    }else if(error){
-      console.log('Some error occured.');
-    }
-});
-}else
+  this.bs2.current.snapTo(0);
+  setDoctype(1);
+}
+if(checked==='second')
 {
-  setMsgDialog(true);
+  this.bs2.current.snapTo(0);
+  setDoctype(2);
+}
+if(checked==='third')
+{
+  this.bs2.current.snapTo(0);
+  setDoctype(3);
+}else{
+ // alert("clicked");
+  this.bs2.current.snapTo(-1);
 }
 }
 
@@ -223,6 +228,9 @@ onUploadImage=async()=>{
  
  // alert(image);
   setLoading(true);
+
+  if(doctype==1)
+  {
 
   try {
     let response = await api.saveInvoice(state.user.id, image);
@@ -239,7 +247,45 @@ onUploadImage=async()=>{
     setError(error.message);
     setLoading(false)
 }
+  }
+  if(doctype==2)
+  {
 
+  try {
+    let response = await api.saveBankStatement(state.user.id, image);
+    //updateUser(response.user);
+     if(response.status=="success")
+     {
+    console.log(JSON.stringify(response.message));
+    setUploadStatus(true);   
+  }
+    setLoading(false);
+
+    //navigation.navigate('App');
+} catch (error) {
+    setError(error.message);
+    setLoading(false)
+}
+  }
+  if(doctype==3)
+  {
+
+  try {
+    let response = await api.saveOtherDocument(state.user.id, image);
+    //updateUser(response.user);
+     if(response.status=="success")
+     {
+    console.log(JSON.stringify(response.message));
+    setUploadStatus(true);   
+  }
+    setLoading(false);
+
+    //navigation.navigate('App');
+} catch (error) {
+    setError(error.message);
+    setLoading(false)
+}
+  }
 }
 
 
@@ -259,7 +305,7 @@ onUploadImage=async()=>{
         opacity: Animated.add(0.1, Animated.multiply(fall2, 1.0)),
     }}></Animated.View>
     
-          <StatusBar backgroundColor='#FFF080' barStyle="light-content"/>
+          <StatusBar backgroundColor='#F6F9F3' barStyle="light-content"/>
           
      
           <Dialog
@@ -311,7 +357,7 @@ dialogTitle={!uploadStatus?<DialogTitle title="" />:<DialogTitle title="Image Up
   </Dialog>
   <Dialog
           
-  visible={showMsgDialog}
+  visible={selectDoc}
   dialogAnimation={new ScaleAnimation({
 initialValue: 0, // optional
 useNativeDriver: true, // optional
@@ -319,25 +365,19 @@ useNativeDriver: true, // optional
 dialogTitle={<DialogTitle title="" />}
   footer={
     <DialogFooter>
-      {(sendMsg && !iswhatsapp)?<DialogButton
+     <DialogButton
         text="OK"
         onPress={() => {
           setMsgDialog(false);
+          setSelectDoc(false);
           onSendMsg(checked);
-          if(checked==='second')
-        {
-        setwhatsapp(true)
-        }else{
-          setwhatsapp(false);
-        }
-          
-         
         }}
-      />:<DialogButton/>}
+      /> 
       <DialogButton
         text="CANCEL"
         onPress={() => {
           setMsgDialog(false);
+          setSelectDoc(false);
           setwhatsapp(false);
           //setSendMsg(false);
          
@@ -348,19 +388,25 @@ dialogTitle={<DialogTitle title="" />}
 >
   <DialogContent>
   
-  {(sendMsg && iswhatsapp)?<SendWhatsapp></SendWhatsapp>:
-  <View style={{height:150,width:250}}>
+  {(!selectDoc)?null:
+  <View style={{height:250,width:250}}>
 
   <RadioButtonRN
   data={rdata}
   selectedBtn={(e) => {console.log(e);
-  if(e.label==='Normal'){
+  if(e.label==='Invoice'){
     //setwhatsapp(false);
     setChecked('first');
   }
-  if(e.label==='Whatsapp'){
+  if(e.label==='Bank Statement'){
     //setwhatsapp(true);
     setChecked('second');
+  }
+  if(e.label==='Other Document'){
+    //setwhatsapp(true);
+    setChecked('third');
+  }else{
+    this.bs2.current.snapTo(1);
   }
   }
   }

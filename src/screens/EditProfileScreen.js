@@ -113,6 +113,10 @@ const onUpdateImage=async()=>{
   const callUserInfo=async()=>{
 
     let response=await api.userInfo(state.user.id);
+    if(response.indexOf('Tu')!==-1){
+    var fresponse=response.replace('Tu','');
+    response=JSON.parse(fresponse);
+    }
     if(response  && response.body[0].username!='')
     {
     console.log(JSON.stringify(response));
@@ -122,8 +126,8 @@ const onUpdateImage=async()=>{
     setEmail(response.body[0].emailid);
     setAddress(response.body[0].address);
     setContact(response.body[0].contact_person);
-    alert(response.body[0].photoPath.size());
-    if(response.body[0].photoPath!=null)
+    //alert(response.body[0].photoPath.size());
+    if(response.body[0].photo!=null)
     {
     setImage(response.body[0].photoPath);
     }  

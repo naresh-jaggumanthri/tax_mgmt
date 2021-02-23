@@ -88,7 +88,7 @@ const SignInScreen = (props) => {
  
     return (
       <View style={styles.container}>
-          <StatusBar backgroundColor='#FFF080' barStyle="light-content"/>
+          <StatusBar backgroundColor='#F6F9F3' barStyle="light-content"/>
           <Loader loading={loading}/>
           <View style={styles.header_logo}>
             <Animatable.Image 
