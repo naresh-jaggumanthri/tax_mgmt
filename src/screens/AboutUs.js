@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import { 
     View, 
     Text, 
@@ -40,7 +40,24 @@ import {Searchbar} from 'react-native-paper';
 
 const AboutUs = ({navigation}) => {
  
-    const [data, setData] = React.useState({
+  useEffect(()=>{
+    checkInternet();
+  
+
+  },[]);  
+
+  const checkInternet=async()=>{
+    const isConnected = await NetworkUtils.isNetworkAvailable();
+    if(!isConnected)
+    {
+        console.log('No Internet Connection Available');
+        alert('No Internet Connection Available');
+        
+        return;
+    }
+  }
+  
+  const [data, setData] = React.useState({
         username: '',
         password: '',
         check_textInputChange: false,
@@ -69,6 +86,8 @@ const AboutUs = ({navigation}) => {
     const [mydata, setMydata] = useState([]);
     const [value, setValue] = useState('');
     const [isInitiated, setInitiated] = useState(true);
+    const [msg,setMsg]=useState("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
+
     
     bs = React.createRef();
     fall = new Animated.Value(1);
@@ -216,46 +235,37 @@ onUploadImage=async()=>{
  
 }
 
+const updateMessageStatus = async(id)=>{
+  setLoading(true);
+  let res = await api.updateMessage(id,state.user.id);
+  if (res && res.body != null) {
+     
+  //alert(JSON.stringify(res3.body));
+  setMydata(res.body);
+  setLoading(false);
+  }else{
+  alert('Something went wrong to retrieve other documents');
+  setLoading(false);
+}
 
+  setLoading(false);
+};
 
 const makeRemoteRequest = async () => {
-  let invoicedata = [];
+ 
 
   
   setLoading(true);
-  let res = await api.getHistoryItem(state.user.id, 'Invoice');
-  if (res && res.body != null) {
-    let newFile = res.body.map((file) => {
-      return {...file, key4: 'Invoice'};
-    });
-    console.log(JSON.stringify(newFile));
-    invoicedata = newFile;
-  } else if (res.body == '') {
-    alert('Something went wrong');
-  }
-  let res2 = await api.getHistoryItem(state.user.id, 'BankStatement');
-  if (res2 && res2.body != null) {
-    let newFile = res2.body.map((file) => {
-      return {...file, key4: 'BankStatement'};
-    });
-    console.log(JSON.stringify(newFile));
-    invoicedata = invoicedata.concat(newFile);
-  } else if (res2.body == '') {
-    alert('Something went wrong to retrieve bank statements');
-  }
-
-  let res3 = await api.getHistoryItem(state.user.id, 'OtherDocument');
+ 
+ 
+  let res3 = await api.getMessages(state.user.id);
   if (res3 && res3.body != null) {
-    let newFile = res3.body.map((file) => {
-      return {...file, key4: 'OtherDocument'};
-    });
-    console.log(JSON.stringify(newFile));
-    invoicedata = invoicedata.concat(newFile);
-  } else if (res3.body == '') {
-    alert('Something went wrong to retrieve other documents');
-  }
-
-  setMydata(invoicedata);
+     
+  //alert(JSON.stringify(res3.body));
+  setMydata(res3.body);
+  }else{
+  alert('Something went wrong to retrieve other documents');
+}
 
   setInitiated(false);
   setLoading(false);
@@ -307,14 +317,11 @@ const renderHeaderList = () => {
   );
 };
 
-const itemOnclick = (image) => {
-  // var newString = image.split("/").pop();
-
-  //var final_url='http://sravyabiotech.com/mobileuser/uploads/users/'+newString;
-  //alert(final_url);
- // console.log(image);
- // setImg(image);
-  //setModalVisible(true);
+const itemOnclick = (id,msg) => {
+  
+ setMsg(msg);
+  setModalVisible(true);
+  updateMessageStatus(id);
 };
 
     
@@ -348,38 +355,19 @@ const itemOnclick = (image) => {
                 text="CANCEL"
                 onPress={() => {
                   setModalVisible(false);
-                  setUploadStatus(false);
-                }}
-              />
-              {(!uploadStatus?<DialogButton
-                text="UPLOAD"
-                onPress={() => {
-                 // setImage(exampleGIF);
-                 this.onUploadImage();
-                 setLoading(true);
                   
                 }}
-              />:<DialogButton/>)}
+              />
+             
             </DialogFooter>
           }
         >
           <DialogContent>
-          {(!uploadStatus?<ImageModal
-          
-          resizeMode="contain"
-          imageBackgroundColor="#000000"
-          style={{
-            width: 310,
-            height: 310,
-            padding:10
-          }}
-          source={{
-            uri: image,
-          }}
-        />: <Image 
-              source={exampleImage2}  
-              style={{width: 310, height:310 }} 
-          />)}
+         
+          <Paragraph style={{textAlign:'justify',justifyContent:'center'}}>
+           {msg}
+           </Paragraph>
+         
           </DialogContent>
         </Dialog>
           <View style={{flex:0.02,paddingHorizontal:30,paddingVertical:10}}>
@@ -436,7 +424,7 @@ const itemOnclick = (image) => {
        
           <ScrollView style={{height:110,marginBottom:1}}>
            <Paragraph style={{textAlign:'justify',justifyContent:'center'}}>
-           Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+           {msg}
            </Paragraph>
            </ScrollView>
         </View>
@@ -474,16 +462,14 @@ const itemOnclick = (image) => {
         data={mydata}
         renderItem={({item}) => (
           <ListItem bottomDivider>
-            <Avatar source={{uri: item.Path}} />
+        
             <ListItem.Content
               onTouchStart={() => {
-                itemOnclick(item.Path);
-              }}>
-              <ListItem.Title>{item.key4}</ListItem.Title>
-              <ListItem.Subtitle>{item.created}</ListItem.Subtitle>
-              <Text style={{paddingLeft: 10, color: 'grey'}}>
-                {item.docname}
-              </Text>
+                itemOnclick(item.id,item.msg);
+              }} >
+              <ListItem.Title> <Paragraph style={item.status=='Unread'?{textAlign:'justify',justifyContent:'center',paddingLeft: 0, color: 'grey'}:{textAlign:'justify',justifyContent:'center',paddingLeft: 10, color: 'blue'}}>{item.msg}</Paragraph></ListItem.Title>
+              <ListItem.Subtitle>{item.createdat}</ListItem.Subtitle>
+              
             </ListItem.Content>
             <ListItem.Chevron />
           </ListItem>
@@ -549,7 +535,7 @@ const styles = StyleSheet.create({
     text_header: {
         color: 'black',
         fontWeight: 'bold',
-        fontSize: 30
+        fontSize: 20
     },
     text_footer: {
         color: '#05375a',

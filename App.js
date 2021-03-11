@@ -28,12 +28,52 @@ import {
 
 
 import RootStackScreen from './src/screens/RootStackScreen';
-
+import { Alert } from 'react-native';
+import { BackHandler } from 'react-native';
+import { Linking } from 'react-native';
+import VersionCheck from 'react-native-version-check';
+import NetworkUtils from './src/utils/NetworkUtils';
 
 
 
 
 const App = () => {
+ 
+  useEffect(()=>{
+    checkInternet();
+   checkVersion();
+
+  },[]);
+
+  const checkInternet=async()=>{
+    const isConnected = await NetworkUtils.isNetworkAvailable();
+    if(!isConnected)
+    {
+        console.log('No Internet Connection Available');
+        alert('No Internet Connection Available');
+        
+        return;
+    }
+  }
+  const checkVersion = async () => {
+    try{
+    let updateNeeded = await VersionCheck.needUpdate();
+    if (updateNeeded && updateNeeded.isNeeded) {
+        //Alert the user and direct to the app url
+        Alert.alert(
+          'Please Update','You will have to update your app o the latest version to continue using.',
+          [{
+            text:'Update',
+            onPress:()=>{
+              BackHandler.exitApp();
+              Linking.openURL(updateNeeded.storeUrl);
+            }
+          }],
+          {cancelable:false},
+        );
+    }
+  }catch(error){}
+}
  const [isDarkTheme, setIsDarkTheme] = React.useState(false);
   const theme = isDarkTheme ? CustomDarkTheme : CustomDefaultTheme;
   const CustomDefaultTheme = {

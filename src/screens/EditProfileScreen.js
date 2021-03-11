@@ -28,9 +28,23 @@ import { ScrollView } from 'react-native-gesture-handler';
 
 const exampleImage = require('../assets/avatar.jpg');
 
-const EditProfileScreen = () => {
-  bs = React.createRef();
-  fall = new Animated.Value(1);
+const EditProfileScreen = ({navigation}) => {
+  useEffect(()=>{
+    checkInternet();
+  
+
+  },[]);
+  
+  const checkInternet=async()=>{
+    const isConnected = await NetworkUtils.isNetworkAvailable();
+    if(!isConnected)
+    {
+        console.log('No Internet Connection Available');
+        alert('No Internet Connection Available');
+        
+        return;
+    }
+  }
   const exampleImageUri = Image.resolveAssetSource(exampleImage).uri;
   const [image, setImage] = useState(exampleImageUri);
   const {colors} = useTheme();
@@ -54,7 +68,8 @@ useEffect(() => {
 
 
 
-
+bs3 = React.createRef();
+  fall3 = new Animated.Value(1); 
 
 
 
@@ -134,11 +149,18 @@ const onUpdateImage=async()=>{
   }else{
       alert('user does not exists');
     }
-    setInitiated(false);
+    //setInitiated(false);
     return;
 
   };
-
+  const callBottomSheet=()=>{
+    try{
+     
+      this.bs3.current.snapTo(0);
+    }catch(e){
+      console.log(e);
+    }
+  }
   const takePhotoFromCamera = () => {
     ImagePicker.openCamera({
       compressImageMaxWidth: 300,
@@ -148,7 +170,7 @@ const onUpdateImage=async()=>{
     }).then(image => {
       console.log(image);
       setImage(image.path);
-      this.bs.current.snapTo(1);
+      this.bs3.current.snapTo(1);
     });
   }
 
@@ -161,7 +183,7 @@ const onUpdateImage=async()=>{
     }).then(image => {
       console.log(image);
       setImage(image.path);
-      this.bs.current.snapTo(1);
+      this.bs3.current.snapTo(1);
     });
   }
 
@@ -179,7 +201,7 @@ const onUpdateImage=async()=>{
       </TouchableOpacity>
       <TouchableOpacity
         style={styles.panelButton}
-        onPress={() => this.bs.current.snapTo(1)}>
+        onPress={() => this.bs3.current.snapTo(1)}>
         <Text style={styles.panelButtonTitle}>Cancel</Text>
       </TouchableOpacity>
     </View>
@@ -193,28 +215,46 @@ const onUpdateImage=async()=>{
     </View>
   );
 
-  
+ 
   
 
   return (
     <ScrollView>
 
     <View style={styles.container}>
+    <View style={{alignItems:'flex-start',justifyContent:'flex-start',padding:10}}>
+          <TouchableOpacity
+                 onPress={()=>{
+           navigation.navigate('HomeScreen');
+          }}
+                >
+                         <Feather 
+                        name="arrow-left"
+                        color="red"
+                        size={23}
+                        style={{fontStyle:'bold'}}
+                    />
+                   
+                </TouchableOpacity>
+
+          </View>
       <Loader loading={loading}></Loader>
       <BottomSheet
-        ref={this.bs}
+        ref={this.bs3}
         snapPoints={[330, 0]}
         renderContent={this.renderInner}
         renderHeader={this.renderHeader}
         initialSnap={1}
-        callbackNode={this.fall}
+        callbackNode={this.fall3}
         enabledGestureInteraction={true}
       />
       <Animated.View style={{margin: 20,
-        opacity: Animated.add(0.1, Animated.multiply(this.fall, 1.0)),
+        opacity: Animated.add(0.1, Animated.multiply(this.fall3, 1.0)),
     }}>
         <View style={{alignItems: 'center'}}>
-          <TouchableOpacity onPress={() => this.bs.current.snapTo(0)}>
+          <TouchableOpacity onPress={()=>
+          callBottomSheet()
+          }>
             <View
               style={{
                 height: 100,

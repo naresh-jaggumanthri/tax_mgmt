@@ -4,7 +4,7 @@ import {
   Text,
   FlatList,
   ActivityIndicator,
-  TouchableHighlight,
+  TouchableHighlight,BackHandler
 } from 'react-native';
 import {ListItem, Avatar} from 'react-native-elements';
 import * as api from '../api/auth';
@@ -29,6 +29,36 @@ const BookmarkScreen = () => {
   const [img, setImg] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
 
+  useEffect(() => {
+    
+    const backHandler = BackHandler.addEventListener(
+      "hardwareBackPress",
+      onLogoutPress
+    );
+    return () => backHandler.remove();
+
+}, []);
+const onLogoutPress=()=>{
+ /* setTimeout(() => {
+    Alert.alert(
+        title,
+        msg,
+        [
+            {
+                text: 'Cancel',
+                
+                //style: 'cancel',
+            },
+            {
+                text: 'OK', onPress: () => {handleLogout()}
+            },
+        ],
+        { cancelable: false },
+    ); 
+}, 300) */
+setModalVisible(false);
+
+};
   const makeRemoteRequest = async () => {
     let invoicedata = [];
 

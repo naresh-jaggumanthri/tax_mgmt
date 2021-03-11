@@ -18,6 +18,7 @@
     "android-build": "react-native bundle --platform android --dev false --entry-file index.js --bundle-output android/app/src/main/assets/index.android.bundle --assets-dest android/app/src/main/res"
   },
   "dependencies": {
+    "@react-native-community/netinfo": "^6.0.0",
     "@react-native-picker/picker": "1.9.11",
     "@react-navigation/drawer": "^5.12.2",
     "@react-navigation/material-bottom-tabs": "^5.3.13",
@@ -53,7 +54,8 @@
     "react-native-swipe-list-view": "^3.2.5",
     "react-native-swiper": "^1.6.0",
     "react-native-vector-icons": "^8.0.0",
-    "reanimated-bottom-sheet": "^1.0.0-alpha.22"   
+    "react-native-version-check": "^3.4.2",
+    "reanimated-bottom-sheet": "^1.0.0-alpha.22"
   },
   "devDependencies": {
     "@babel/core": "7.12.10",

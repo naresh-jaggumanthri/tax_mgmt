@@ -1,4 +1,4 @@
-import React from 'react';
+import React,{useEffect} from 'react';
 import { 
     View, 
     Text, 
@@ -13,21 +13,41 @@ import * as Animatable from 'react-native-animatable';
 import LinearGradient from 'react-native-linear-gradient';
 import MaterialIcons from 'react-native-vector-icons/MaterialIcons';
 import { useTheme } from '@react-navigation/native';
+
 const exampleImage2 = require('../assets/footerback.jpg');
 const SplashScreen = ({navigation}) => {
+    useEffect(()=>{
+        checkInternet();
+      
+    
+      },[]);
+      const checkInternet=async()=>{
+        const isConnected = await NetworkUtils.isNetworkAvailable();
+        if(!isConnected)
+        {
+            console.log('No Internet Connection Available');
+            alert('No Internet Connection Available');
+            
+            return;
+        }
+      }
     const { colors } = useTheme();
-   
+    
         setTimeout( () => {
+            
            setTimePassed();
         },5000);
       
       
       const setTimePassed=()=> {
          //this.setState({timePassed: true});
+        
          navigation.navigate('SignInScreen');
       }
       
-   
+    
+
+     
 
     return (
       <View style={styles.container}>

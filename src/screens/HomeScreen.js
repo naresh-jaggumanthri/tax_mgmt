@@ -1,4 +1,4 @@
-import React,{useState} from 'react';
+import React,{useState,useEffect} from 'react';
 import { 
     View, 
     Text, 
@@ -10,7 +10,7 @@ import {
     StatusBar,
     Dimensions,
     Alert,
-    Image,Linking
+    Image,Linking,BackHandler
 } from 'react-native';
 import * as Animatable from 'react-native-animatable';
 import Icon from 'react-native-vector-icons/FontAwesome';
@@ -82,6 +82,41 @@ const HomeScreen = ({navigation,route}) => {
       const [whatsAppMessage, setWhatsAppMessage] = useState('test msg');
       const [selectDoc,setSelectDoc]=useState(false);
       const [doctype,setDoctype]=useState(1);
+
+
+      useEffect(() => {
+       
+          checkInternet();
+        
+      
+               
+        const backHandler = BackHandler.addEventListener(
+          "hardwareBackPress",
+          onLogoutPress
+        );
+        return () => backHandler.remove();
+    
+  }, []);
+
+
+  const checkInternet=async()=>{
+    const isConnected = await NetworkUtils.isNetworkAvailable();
+    if(!isConnected)
+    {
+        console.log('No Internet Connection Available');
+        alert('No Internet Connection Available');
+        
+        return;
+    }
+  }
+
+
+    const onLogoutPress=()=>{
+      //handleLogout();
+     // return;
+     console.log('backkk');
+     return true;
+    }
     bs2 = React.createRef();
     fall2 = new Animated.Value(1);
     const takePhotoFromCamera = () => {
@@ -114,7 +149,7 @@ const HomeScreen = ({navigation,route}) => {
         
       });
     }
-    const [checked, setChecked] = React.useState('first');
+    const [checked, setChecked] = React.useState('');
     const [showMsgDialog, setMsgDialog] = React.useState(false);
     const [sendMsg, setSendMsg] = React.useState(false);
     const [iswhatsapp,setwhatsapp]=React.useState(false);
@@ -204,23 +239,28 @@ const sendWMsg = () => {
 
 
 const  onSendMsg=(checked)=>{
-  if(checked==='first')
-{
+ // alert(checked);
+  if(checked=='first'){
+ // alert(checked);
   this.bs2.current.snapTo(0);
+  setChecked('none');
   setDoctype(1);
 }
-if(checked==='second')
+if(checked=='second')
 {
+  //alert(checked);
   this.bs2.current.snapTo(0);
+  setChecked('none');
   setDoctype(2);
 }
-if(checked==='third')
+if(checked=='third')
 {
+  //alert(checked);
   this.bs2.current.snapTo(0);
+  setChecked('none');
   setDoctype(3);
-}else{
- // alert("clicked");
-  this.bs2.current.snapTo(-1);
+}else if(checked=='none'){
+ //this.bs2.current.snapTo(1);
 }
 }
 
@@ -394,19 +434,26 @@ dialogTitle={<DialogTitle title="" />}
   <RadioButtonRN
   data={rdata}
   selectedBtn={(e) => {console.log(e);
-  if(e.label==='Invoice'){
+  console.log("Label====>",e.label);
+  if(e.label!=null)
+  {
+  if(e.label==="Invoice"){
     //setwhatsapp(false);
     setChecked('first');
-  }
-  if(e.label==='Bank Statement'){
+    return;
+  }else if(e.label==="Bank Statement"){
     //setwhatsapp(true);
     setChecked('second');
-  }
-  if(e.label==='Other Document'){
+    return;
+  }else if(e.label==="Other Document"){
     //setwhatsapp(true);
     setChecked('third');
-  }else{
-    this.bs2.current.snapTo(1);
+    return;
+  }
+  }
+  else{
+    setChecked('none');
+    return;
   }
   }
   }

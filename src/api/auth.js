@@ -278,6 +278,50 @@ export async function saveInvoice(id,data){
      }
  
  }
+
+ export async function getMessages(userid){
+    try{
+         const options = {
+             headers: {
+                 Accept: "application/json",
+                 "Content-Type": "multipart/form-data"
+             }
+         };
+          const form_data = new FormData();
+         //for ( let key in data )
+             form_data.append('userid', userid);
+             //form_data.append('doc_type', type);
+             //form_data.append('password', password);
+          let res = await axios.post(`${c.GET_MESSAGES}`, form_data, options);
+         console.log("message item response====>",JSON.stringify(res));
+         return res.data;
+     }catch (e) {
+         throw handler(e);
+     }
+ 
+ }
+
+ export async function updateMessage(id,userid){
+    try{
+         const options = {
+             headers: {
+                 Accept: "application/json",
+                 "Content-Type": "multipart/form-data"
+             }
+         };
+          const form_data = new FormData();
+         //for ( let key in data )
+             form_data.append('id', id);
+             form_data.append('userid', userid);
+             //form_data.append('password', password);
+          let res = await axios.post(`${c.UPDATE_MESSAGES}`, form_data, options);
+         console.log("update message item response====>",JSON.stringify(res));
+         return res.data;
+     }catch (e) {
+         throw handler(e);
+     }
+ 
+ }
  
 
  
