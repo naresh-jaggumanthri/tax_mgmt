@@ -1,10 +1,48 @@
-import axios from 'axios';
 
+//import axios from 'axios';
 import * as c from './Const';
+// Intercept the request and set the global request as an ajax request
+/*axios.interceptors.request.use((config) => {
+    config.headers['X-Requested-With'] = 'XMLHttpRequest';
+       let regex = /.*csrftoken=([^;.]*).*$/; // Used to match csrftoken value from cookie
+    config.headers['X-CSRFToken'] = document.cookie.match(regex) === null ? null : document.cookie.match(regex)[1];
+    return config
+});*/
+  
+'use strict';
 
+const axios = require('axios').default;
+const tough = require('tough-cookie');
+const axiosCookieJarSupport = require('axios-cookiejar-support').default;
+
+//axiosCookieJarSupport(axios);
+
+const cookieJar = new tough.CookieJar();
+cookieJar.setCookieSync('key=value; domain=app.jaswalandco.com', 'http://app.jaswalandco.com');
+
+
+
+ 
+//const cookieJar = new CookieJar();
+
+const options = {
+    headers: {
+        Accept: 'application/json',
+        'Content-Type': 'multipart/form-data,application/json',
+        jar: cookieJar,
+        withCredentials: true,
+        xsrfCookieName: 'XSRF-TOKEN',
+          xsrfHeaderName: 'X-XSRF-TOKEN'
+         
+       
+    }
+};
+
+let token = new Date().getTime() + 3600 * 1000;
 export async function register(data){
     try{
-        let res = await axios.post(c.REGISTER, data);
+        
+        let res = await axios.post(c.REGISTER, data,options);
 
         return res.data;
     }catch (e) {
@@ -13,14 +51,9 @@ export async function register(data){
 }
 
 export async function login(username,password){
-    
+    //console.log(token);
    try{
-        const options = {
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "multipart/form-data"
-            }
-        };
+       
 
         const form_data = new FormData();
         //for ( let key in data )
@@ -31,14 +64,17 @@ export async function login(username,password){
         console.log("login response====>",JSON.stringify(res));
         return res.data;
     }catch (e) {
+        console.log(e.response);
         throw handler(e);
+
     }
 
 }
 
 export async function forgotPassword(data) {
     try {
-        let res = await axios.post(c.FORGOT_PASSWORD, data);
+       
+        let res = await axios.post(c.FORGOT_PASSWORD, data,options);
 
         return res.data;
     } catch (e) {
@@ -48,12 +84,7 @@ export async function forgotPassword(data) {
 
 export async function updateProfile(id,username,company,mobileno,emailid,address,contact_person){
     try{
-        const options = {
-            headers: {
-                Accept: "application/json",
-                "Content-Type": "multipart/form-data"
-            }
-        };
+       
 
         const form_data = new FormData();
        // for ( let key in data )
@@ -103,12 +134,7 @@ export async function saveInvoice(id,data){
    // alert(JSON.stringify(path));
     
     try{
-         const options = {
-             headers: {
-                 Accept: "application/json",
-                 "Content-Type": "multipart/form-data"
-             }
-         };
+        
  
          const form_data = new FormData();
          //for ( let key in data )
@@ -136,12 +162,7 @@ export async function saveInvoice(id,data){
    // alert(JSON.stringify(path));
     
     try{
-         const options = {
-             headers: {
-                 Accept: "application/json",
-                 "Content-Type": "multipart/form-data"
-             }
-         };
+     
  
          const form_data = new FormData();
          //for ( let key in data )
@@ -169,12 +190,7 @@ export async function saveInvoice(id,data){
    // alert(JSON.stringify(path));
     
     try{
-         const options = {
-             headers: {
-                 Accept: "application/json",
-                 "Content-Type": "multipart/form-data"
-             }
-         };
+        
  
          const form_data = new FormData();
          //for ( let key in data )
@@ -203,12 +219,7 @@ export async function saveInvoice(id,data){
    // alert(JSON.stringify(path));
     
     try{
-         const options = {
-             headers: {
-                 Accept: "application/json",
-                 "Content-Type": "multipart/form-data"
-             }
-         };
+       
  
          const form_data = new FormData();
          //for ( let key in data )
@@ -232,12 +243,7 @@ export async function saveInvoice(id,data){
  export async function userInfo(id){
     
     try{
-         const options = {
-             headers: {
-                 Accept: "application/json",
-                 "Content-Type": "multipart/form-data"
-             }
-         };
+        
  
          const form_data = new FormData();
          //for ( let key in data )
@@ -257,12 +263,7 @@ export async function saveInvoice(id,data){
  export async function getHistoryItem(id,type){
     
     try{
-         const options = {
-             headers: {
-                 Accept: "application/json",
-                 "Content-Type": "multipart/form-data"
-             }
-         };
+        
  
          const form_data = new FormData();
          //for ( let key in data )
@@ -281,12 +282,7 @@ export async function saveInvoice(id,data){
 
  export async function getMessages(userid){
     try{
-         const options = {
-             headers: {
-                 Accept: "application/json",
-                 "Content-Type": "multipart/form-data"
-             }
-         };
+      
           const form_data = new FormData();
          //for ( let key in data )
              form_data.append('userid', userid);
@@ -303,12 +299,7 @@ export async function saveInvoice(id,data){
 
  export async function updateMessage(id,userid){
     try{
-         const options = {
-             headers: {
-                 Accept: "application/json",
-                 "Content-Type": "multipart/form-data"
-             }
-         };
+       
           const form_data = new FormData();
          //for ( let key in data )
              form_data.append('id', id);

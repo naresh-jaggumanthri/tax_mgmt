@@ -1,5 +1,5 @@
 {
-  "name": "tax_mgmt",
+  "name": "JASWAL & CO",
   "version": "0.0.2",
   "private": true,
   "scripts": {
@@ -25,6 +25,7 @@
     "@react-navigation/native": "^5.9.2",
     "@react-navigation/stack": "^5.14.1",
     "axios": "^0.21.1",
+    "axios-cookiejar-support": "^1.0.1",
     "radio-buttons-react-native": "^1.0.4",
     "react": "17.0.1",
     "react-native": "0.63.4",
@@ -55,7 +56,10 @@
     "react-native-swiper": "^1.6.0",
     "react-native-vector-icons": "^8.0.0",
     "react-native-version-check": "^3.4.2",
-    "reanimated-bottom-sheet": "^1.0.0-alpha.22"
+    "reanimated-bottom-sheet": "^1.0.0-alpha.22",
+    "tough-cookie": "^3.0.1",
+    "url": "^0.11.0",
+    "util": "^0.12.3"
   },
   "devDependencies": {
     "@babel/core": "7.12.10",
