@@ -390,7 +390,7 @@ const itemOnclick = (id,msg) => {
           <View style={{flex:0.02,alignItems:'flex-end',justifyContent:'flex-end',paddingHorizontal:30,paddingVertical:10,marginTop:40}}>
           <TouchableOpacity
           onPress={()=>{
-           alert('ok');
+           //alert('ok');
            navigation.navigate('SignInScreen');
            handleLogout();
           }}>
