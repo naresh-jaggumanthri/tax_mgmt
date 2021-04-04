@@ -18,7 +18,7 @@ import AuthProvider,{useAuth} from '../providers/auth';
 
 
 
-
+//const {state, handleLogout} = useAuth();
 const RootStack = createStackNavigator();
 const Tab = createMaterialBottomTabNavigator();
 function Home () {
@@ -35,7 +35,7 @@ function Home () {
 
   const [username,setuname]= useState(val);
  
-    return(
+    return(username!=null?
     <Tab.Navigator
     initialRouteName="HomeScreen"
    // activeColor="#e91e63"
@@ -48,10 +48,15 @@ function Home () {
             labelStyle: {
               fontSize: 13,
           },
-
-      }
+          
+          keyboardHidesTabBar: true,
+          
+        }
    }
-    
+   
+
+
+   
     
     
   >
@@ -59,13 +64,13 @@ function Home () {
       name="HomeScreen"
       component={HomeScreen}
       
-      options={{
+      options={({ route }) => ({
        
         tabBarLabel: 'Home',
         tabBarIcon: ({ color }) => (
           <MaterialCommunityIcons name="home" color={color} size={26} />
         ),
-      }}
+      })}
       initialParams={{ uname: username}}
     />
      <Tab.Screen
@@ -91,15 +96,58 @@ function Home () {
       }}
       
     /> 
+
+{/*<Tab.Screen
+      name="logout"
+      component={Logout}
+      options={{
+        
+        tabBarLabel: 'Logout',
+        tabBarIcon: ({ color }) => (
+          <MaterialCommunityIcons name="power" color={color} size={26} />
+        ),
+             
+
+
+       
+      }}
+      
+    /> */} 
+   
    
   </Tab.Navigator>
-    );
+    :null);
 };
+
+
+const getTabBarVisibility = (route) => {
+  const routeName = route.state
+    ? route.state.routes[route.state.index].name
+    : '';
+
+  if (routeName === 'SignInScreen') {
+    return false;
+  }
+
+  return true;
+}
+const Logout =()=>
+{
+  const {state,handleLogout}=useAuth();
+ // state.user.username=null;
+handleLogout();
+
+//RootStackScreen.Navigator.name("SignInScreen");
+
+return(<RootStackScreen/>); 
+
+  
+}
 const RootStackScreen = ({navigation}) => {return(
   
     <AuthProvider>
     <RootStack.Navigator headerMode='none'>
-        <RootStack.Screen name="SplashScreen" component={WelcomeScreen}/>
+        <RootStack.Screen name="SplashScreen" component={WelcomeScreen}   />
         <RootStack.Screen name="SignInScreen" component={SignInScreen}/>
         <RootStack.Screen name="Home" component={Home} initialParams={{ uname: 'Client' }}/>
       <RootStack.Screen name="BookmarkScreen" component={BookmarkScreen}/> 

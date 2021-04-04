@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="utf-8"?>
+<network-security-config>
+  <base-config cleartextTrafficPermitted="true">144.91.107.38
+  <!--  <domain includeSubdomains="true">144.91.107.38</domain>  Debug port -->
+   <!-- <domain includeSubdomains="true">app.jaswalandco.com</domain -->
+  </base-config>
+</network-security-config>

@@ -16,6 +16,8 @@ target 'tax_mgmt' do
 
   pod 'RNCAsyncStorage', :path => '../node_modules/@react-native-community/async-storage'
 
+  pod 'react-native-cookies', :path => '../node_modules/react-native-cookies'
+
   target 'tax_mgmtTests' do
     inherit! :complete
     # Pods for testing

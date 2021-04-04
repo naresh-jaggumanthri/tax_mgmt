@@ -128,7 +128,8 @@ const onUpdateImage=async()=>{
   const callUserInfo=async()=>{
 
     let response=await api.userInfo(state.user.id);
-    if(response.indexOf('Tu')!==-1){
+    //alert(JSON.stringify(response));
+    if(response.indexOf('Tu')!=-1){
     var fresponse=response.replace('Tu','');
     response=JSON.parse(fresponse);
     }

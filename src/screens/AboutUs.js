@@ -86,7 +86,7 @@ const AboutUs = ({navigation}) => {
     const [mydata, setMydata] = useState([]);
     const [value, setValue] = useState('');
     const [isInitiated, setInitiated] = useState(true);
-    const [msg,setMsg]=useState("Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.");
+    const [msg,setMsg]=useState("WELCOME: \n Thank you for using the app. Here you can send your invoices, bank statements & other documents to your dedicated manager who will ensure your records are kept up to date.\nYou can use the methods below to contact us if you have any query.\nPlease do not forget to check the notifications for any updates.\nPlease ensure the pictures you upload are readable & clear.");
 
     
     bs = React.createRef();
@@ -387,16 +387,17 @@ const itemOnclick = (id,msg) => {
                 </TouchableOpacity>
 
           </View>
-          <View style={{alignItems:'flex-end',justifyContent:'flex-end',paddingVertical:0}}>
+          <View style={{flex:0.02,alignItems:'flex-end',justifyContent:'flex-end',paddingHorizontal:30,paddingVertical:10,marginTop:40}}>
           <TouchableOpacity
           onPress={()=>{
-            handleLogout();
+           alert('ok');
            navigation.navigate('SignInScreen');
+           handleLogout();
           }}>
              <Feather 
                         name="power"
                         color="red"
-                        size={23}
+                        size={25}
                         style={{fontStyle:'bold'}}
                     />
                    

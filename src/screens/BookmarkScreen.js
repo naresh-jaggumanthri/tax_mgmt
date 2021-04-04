@@ -4,7 +4,7 @@ import {
   Text,
   FlatList,
   ActivityIndicator,
-  TouchableHighlight,BackHandler
+  TouchableHighlight,BackHandler,TouchableOpacity
 } from 'react-native';
 import {ListItem, Avatar} from 'react-native-elements';
 import * as api from '../api/auth';
@@ -12,6 +12,7 @@ import Loader from '../components/Loader';
 import {useAuth} from '../providers/auth';
 import ImageModal from 'react-native-image-modal';
 import {Searchbar} from 'react-native-paper';
+import Feather from 'react-native-vector-icons/Feather';
 
 import Dialog, {
   DialogFooter,
@@ -21,7 +22,7 @@ import Dialog, {
   ScaleAnimation,
 } from 'react-native-popup-dialog';
 
-const BookmarkScreen = () => {
+const BookmarkScreen = ({navigation}) => {
   const [loading, setLoading] = useState(false);
   const [mydata, setMydata] = useState([]);
   const [value, setValue] = useState('');
@@ -57,6 +58,7 @@ const onLogoutPress=()=>{
     ); 
 }, 300) */
 setModalVisible(false);
+navigation.pop();
 
 };
   const makeRemoteRequest = async () => {
@@ -140,11 +142,30 @@ setModalVisible(false);
       makeRemoteRequest();
     }
     return (
+      <View style={{flex: 1, flexDirection: 'row'}}>
+      <View style={{alignItems:'flex-start',justifyContent:'flex-start',padding:10}}>
+      <TouchableOpacity
+             onPress={()=>{
+       navigation.navigate('HomeScreen');
+      }}
+            >
+                     <Feather 
+                    name="arrow-left"
+                    color="red"
+                    size={23}
+                    style={{fontStyle:'bold'}}
+                />
+               
+            </TouchableOpacity>
+
+     </View>
       <Searchbar
         placeholder="Search"
         onChangeText={onChangeSearch}
         value={value}
+        style={{alignItems:'flex-end',justifyContent:'flex-end',width:365}}
       />
+       </View>
     );
   };
 
@@ -160,6 +181,7 @@ setModalVisible(false);
 
   return (
     <View style={{flex: 1, flexDirection: 'column'}}>
+   
       <Loader loading={loading}></Loader>
       <Dialog
         visible={modalVisible}

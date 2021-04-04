@@ -4,6 +4,7 @@ import android.app.Application;
 import android.content.Context;
 import com.facebook.react.PackageList;
 import com.facebook.react.ReactApplication;
+import com.psykar.cookiemanager.CookieManagerPackage;
 //import com.reactnativecommunity.asyncstorage.AsyncStoragePackage;
 import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
 import com.lugg.ReactNativeConfig.ReactNativeConfigPackage;
@@ -16,7 +17,7 @@ import com.facebook.soloader.SoLoader;
 import java.lang.reflect.InvocationTargetException;
 import java.util.List;
 import io.xogus.reactnative.versioncheck.RNVersionCheckPackage;
-
+import com.psykar.cookiemanager.CookieManagerPackage;
 public class MainApplication extends Application implements ReactApplication {
 
   private final ReactNativeHost mReactNativeHost =
@@ -33,7 +34,8 @@ public class MainApplication extends Application implements ReactApplication {
           // Packages that cannot be autolinked yet can be added manually here, for example:
           // packages.add(new MyReactNativePackage());
           //packages.add(new ReactNativeConfigPackage());
-          new RNVersionCheckPackage(); 
+          new RNVersionCheckPackage();
+          new CookieManagerPackage(); 
           return packages;
         }
 

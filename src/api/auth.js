@@ -1,6 +1,8 @@
 
 //import axios from 'axios';
 import * as c from './Const';
+import CookieManager from 'react-native-cookies';
+import AsyncStorage from '@react-native-community/async-storage';
 // Intercept the request and set the global request as an ajax request
 /*axios.interceptors.request.use((config) => {
     config.headers['X-Requested-With'] = 'XMLHttpRequest';
@@ -8,18 +10,36 @@ import * as c from './Const';
     config.headers['X-CSRFToken'] = document.cookie.match(regex) === null ? null : document.cookie.match(regex)[1];
     return config
 });*/
+ //CookieManager.clearAll() //clearing cookies stored 
+
+ const axios = require('axios').default;
+  let cookie = null;
   
-'use strict';
+ const axiosObj = axios.create({
+     baseURL: 'http://app.jaswalandco.com',
+     headers: {
+       'Content-Type': 'multipart/form-data',
+       "xsrfCookieName": "XSRF-TOKEN",
+        "xsrfHeaderName": "X-XSRF-TOKEN"
+     },
+     responseType: 'json',
+     withCredentials: true, // enable use of cookies outside web browser
+   });
 
-const axios = require('axios').default;
-const tough = require('tough-cookie');
-const axiosCookieJarSupport = require('axios-cookiejar-support').default;
-
-//axiosCookieJarSupport(axios);
-
-const cookieJar = new tough.CookieJar();
-cookieJar.setCookieSync('key=value; domain=app.jaswalandco.com', 'http://app.jaswalandco.com');
-
+   // this will check if cookies are there for every request and send request
+   axiosObj.interceptors.request.use(async config => {
+     cookie = await AsyncStorage.getItem('cookie');
+     if (cookie) {
+       config.headers.Cookie = cookie;
+     }
+     const token = await AsyncStorage.getItem('token');
+     if (token) {
+     //config.headers.Authorization = token;
+   }
+     return config;
+   });
+ 
+ 
 
 
  
@@ -28,11 +48,11 @@ cookieJar.setCookieSync('key=value; domain=app.jaswalandco.com', 'http://app.jas
 const options = {
     headers: {
         Accept: 'application/json',
-        'Content-Type': 'multipart/form-data,application/json',
-        jar: cookieJar,
+        'Content-Type': 'multipart/form-data',
+       //  jar: cookieJar,
         withCredentials: true,
-        xsrfCookieName: 'XSRF-TOKEN',
-          xsrfHeaderName: 'X-XSRF-TOKEN'
+        
+       
          
        
     }
@@ -42,7 +62,7 @@ let token = new Date().getTime() + 3600 * 1000;
 export async function register(data){
     try{
         
-        let res = await axios.post(c.REGISTER, data,options);
+        let res = await axiosObj.post(c.REGISTER, data);
 
         return res.data;
     }catch (e) {
@@ -60,7 +80,7 @@ export async function login(username,password){
             form_data.append('username', username);
             form_data.append('password', password);
 
-        let res = await axios.post(`${c.LOGIN}`, form_data, options);
+        let res = await axiosObj.post(`${c.LOGIN}`, form_data);
         console.log("login response====>",JSON.stringify(res));
         return res.data;
     }catch (e) {
@@ -74,7 +94,7 @@ export async function login(username,password){
 export async function forgotPassword(data) {
     try {
        
-        let res = await axios.post(c.FORGOT_PASSWORD, data,options);
+        let res = await axiosObj.post(c.FORGOT_PASSWORD, data);
 
         return res.data;
     } catch (e) {
@@ -100,7 +120,7 @@ export async function updateProfile(id,username,company,mobileno,emailid,address
 
            
 
-        let res = await axios.post(`${c.UPDATE_PROFILE}`, form_data, options);
+        let res = await axiosObj.post(`${c.UPDATE_PROFILE}`, form_data);
         console.log(JSON.stringify(res));
         if(res!=null)
         {
@@ -146,7 +166,7 @@ export async function saveInvoice(id,data){
               });
            
  
-         let res = await axios.post(`${c.UPLOAD_INVOICE}`, form_data, options);
+         let res = await axiosObj.post(`${c.UPLOAD_INVOICE}`, form_data);
          console.log("save inv response====>",JSON.stringify(res));
          return res.data;
      }catch (e) {
@@ -174,7 +194,7 @@ export async function saveInvoice(id,data){
               });
            
  
-         let res = await axios.post(`${c.UPLOAD_BANK}`, form_data, options);
+         let res = await axiosObj.post(`${c.UPLOAD_BANK}`, form_data);
          console.log("save inv response====>",JSON.stringify(res));
          return res.data;
      }catch (e) {
@@ -202,7 +222,7 @@ export async function saveInvoice(id,data){
               });
            
  
-         let res = await axios.post(`${c.UPLOAD_OTHER}`, form_data, options);
+         let res = await axiosObj.post(`${c.UPLOAD_OTHER}`, form_data);
          console.log("save inv response====>",JSON.stringify(res));
          return res.data;
      }catch (e) {
@@ -231,7 +251,7 @@ export async function saveInvoice(id,data){
               });
            
  
-         let res = await axios.post(`${c.UPLOAD_IMAGE}`, form_data, options);
+         let res = await axiosObj.post(`${c.UPLOAD_IMAGE}`, form_data);
          console.log("save inv response====>",JSON.stringify(res));
          return res.data;
      }catch (e) {
@@ -250,11 +270,12 @@ export async function saveInvoice(id,data){
              form_data.append('id', id);
              //form_data.append('password', password);
  
-         let res = await axios.post(`${c.USER_INFO}`, form_data, options);
+         let res = await axios.post(`${c.USER_INFO}`, form_data,options);
        
          console.log("user Info response====>",JSON.stringify(res));
          return res.data;
      }catch (e) {
+         //alert(e.message);
          throw handler(e);
      }
  
@@ -271,7 +292,7 @@ export async function saveInvoice(id,data){
              form_data.append('doc_type', type);
              //form_data.append('password', password);
  
-         let res = await axios.post(`${c.GET_HISTORY}`, form_data, options);
+         let res = await axiosObj.post(`${c.GET_HISTORY}`, form_data);
          console.log("history item response====>",JSON.stringify(res));
          return res.data;
      }catch (e) {
@@ -288,7 +309,7 @@ export async function saveInvoice(id,data){
              form_data.append('userid', userid);
              //form_data.append('doc_type', type);
              //form_data.append('password', password);
-          let res = await axios.post(`${c.GET_MESSAGES}`, form_data, options);
+          let res = await axiosObj.post(`${c.GET_MESSAGES}`, form_data);
          console.log("message item response====>",JSON.stringify(res));
          return res.data;
      }catch (e) {
@@ -305,7 +326,7 @@ export async function saveInvoice(id,data){
              form_data.append('id', id);
              form_data.append('userid', userid);
              //form_data.append('password', password);
-          let res = await axios.post(`${c.UPDATE_MESSAGES}`, form_data, options);
+          let res = await axiosObj.post(`${c.UPDATE_MESSAGES}`, form_data);
          console.log("update message item response====>",JSON.stringify(res));
          return res.data;
      }catch (e) {

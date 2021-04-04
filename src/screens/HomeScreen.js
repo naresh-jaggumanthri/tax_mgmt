@@ -122,10 +122,15 @@ const HomeScreen = ({navigation,route}) => {
     const takePhotoFromCamera = () => {
       //Alert.alert('ok');
       ImagePicker.openCamera({
-        compressImageMaxWidth: 300,
-        compressImageMaxHeight: 300,
-        cropping: true,
-        compressImageQuality: 0.7
+       cropping:true,
+       showCropGuidelines:true,
+       showCropFrame:true,
+        
+        compressImageQuality: 0.7,
+        cropperCircleOverlay: false,
+            
+            freeStyleCropEnabled: true,
+            includeBase64: true
       }).then(image => {
         console.log(image);
         image.path.length>0?setModalVisible(true):setModalVisible(false);
@@ -137,10 +142,15 @@ const HomeScreen = ({navigation,route}) => {
   
     const choosePhotoFromLibrary = () => {
       ImagePicker.openPicker({
-        width: 300,
-        height: 300,
-        cropping: true,
-        compressImageQuality: 0.7
+        cropping:true,
+       showCropGuidelines:true,
+       showCropFrame:true,
+        
+        compressImageQuality: 0.7,
+        cropperCircleOverlay: false,
+            
+            freeStyleCropEnabled: true,
+            includeBase64: true
       }).then(image => {
         console.log(image);
         image.path.length>0?setModalVisible(true):setModalVisible(false);
@@ -469,7 +479,7 @@ dialogTitle={<DialogTitle title="" />}
     </View>}
   </DialogContent>
 </Dialog>
-          <View style={{flex:0.02,alignItems:'flex-end',justifyContent:'flex-end',paddingHorizontal:30,paddingVertical:10}}>
+          <View style={{flex:0.02,alignItems:'flex-end',justifyContent:'flex-end',paddingHorizontal:30,paddingVertical:10,marginTop:40}}>
           <TouchableOpacity
                style={{alignItems:'flex-end',justifyContent:'flex-end'}}
                onPress={()=>{
@@ -483,7 +493,7 @@ dialogTitle={<DialogTitle title="" />}
                     <Feather 
                         name="power"
                         color="red"
-                        size={23}
+                        size={25}
                         style={{fontStyle:'bold'}}
                     />
                    
@@ -511,7 +521,10 @@ dialogTitle={<DialogTitle title="" />}
        
           <ScrollView style={{height:110,marginBottom:1}}>
            <Paragraph style={{textAlign:'justify',justifyContent:'center'}}>
-           Lorem Ipsum is simply dummy text of the printing and typesetting industry. Lorem Ipsum has been the industry's standard dummy text ever since the 1500s, when an unknown printer took a galley of type and scrambled it to make a type specimen book. It has survived not only five centuries, but also the leap into electronic typesetting, remaining essentially unchanged. It was popularised in the 1960s with the release of Letraset sheets containing Lorem Ipsum passages, and more recently with desktop publishing software like Aldus PageMaker including versions of Lorem Ipsum.
+           
+            Thank you for using the app. Here you can send your invoices, bank statements & other documents to your dedicated manager who will ensure your records are kept up to date.You can use the methods below to contact us if you have any query.
+            Please do not forget to check the notifications for any updates.
+            Please ensure the pictures you upload are readable & clear.
            </Paragraph>
            </ScrollView>
         </View>
