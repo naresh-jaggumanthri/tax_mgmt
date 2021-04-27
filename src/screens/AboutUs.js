@@ -370,7 +370,7 @@ const itemOnclick = (id,msg) => {
          
           </DialogContent>
         </Dialog>
-          <View style={{flex:0.02,paddingHorizontal:30,paddingVertical:10}}>
+          <View style={{flex:0.05,paddingHorizontal:30,paddingVertical:10}}>
           <View style={{alignItems:'flex-start',justifyContent:'flex-start'}}>
           <TouchableOpacity
                  onPress={()=>{
@@ -387,10 +387,10 @@ const itemOnclick = (id,msg) => {
                 </TouchableOpacity>
 
           </View>
-          <View style={{flex:0.02,alignItems:'flex-end',justifyContent:'flex-end',paddingHorizontal:30,paddingVertical:10,marginTop:40}}>
+          <View style={{alignItems:'flex-end',justifyContent:'flex-end'}}>
           <TouchableOpacity
           onPress={()=>{
-           //alert('ok');
+          // alert('ok');
            navigation.navigate('SignInScreen');
            handleLogout();
           }}>

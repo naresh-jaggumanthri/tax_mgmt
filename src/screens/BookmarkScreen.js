@@ -4,7 +4,7 @@ import {
   Text,
   FlatList,
   ActivityIndicator,
-  TouchableHighlight,BackHandler,TouchableOpacity
+  TouchableHighlight,BackHandler,TouchableOpacity,SafeAreaView
 } from 'react-native';
 import {ListItem, Avatar} from 'react-native-elements';
 import * as api from '../api/auth';
@@ -22,13 +22,16 @@ import Dialog, {
   ScaleAnimation,
 } from 'react-native-popup-dialog';
 
-const BookmarkScreen = ({navigation}) => {
+const BookmarkScreen = (props) => {
   const [loading, setLoading] = useState(false);
   const [mydata, setMydata] = useState([]);
   const [value, setValue] = useState('');
   const [isInitiated, setInitiated] = useState(true);
   const [img, setImg] = useState('');
   const [modalVisible, setModalVisible] = useState(false);
+  const gid=props.route.params.id;
+
+  
 
   useEffect(() => {
     
@@ -58,15 +61,15 @@ const onLogoutPress=()=>{
     ); 
 }, 300) */
 setModalVisible(false);
-navigation.pop();
+props.navigation.pop();
 
 };
-  const makeRemoteRequest = async () => {
+  const makeRemoteRequest = async (gid) => {
     let invoicedata = [];
-
+   
     const {state, handleLogout} = useAuth();
     setLoading(true);
-    let res = await api.getHistoryItem(state.user.id, 'Invoice');
+    let res = await api.getHistoryItem(gid, 'Invoice');
     if (res && res.body != null) {
       let newFile = res.body.map((file) => {
         return {...file, key4: 'Invoice'};
@@ -76,7 +79,7 @@ navigation.pop();
     } else if (res.body == '') {
       alert('Something went wrong');
     }
-    let res2 = await api.getHistoryItem(state.user.id, 'BankStatement');
+    let res2 = await api.getHistoryItem(gid, 'BankStatement');
     if (res2 && res2.body != null) {
       let newFile = res2.body.map((file) => {
         return {...file, key4: 'BankStatement'};
@@ -87,7 +90,7 @@ navigation.pop();
       alert('Something went wrong to retrieve bank statements');
     }
 
-    let res3 = await api.getHistoryItem(state.user.id, 'OtherDocument');
+    let res3 = await api.getHistoryItem(gid, 'OtherDocument');
     if (res3 && res3.body != null) {
       let newFile = res3.body.map((file) => {
         return {...file, key4: 'OtherDocument'};
@@ -138,15 +141,17 @@ navigation.pop();
   };
   const onChangeSearch = (query) => searchFilterFunction(query);
   const renderHeader = () => {
+    const gid=props.route.params.id;
     if (isInitiated) {
-      makeRemoteRequest();
+      makeRemoteRequest(gid);
     }
     return (
+      <SafeAreaView>
       <View style={{flex: 1, flexDirection: 'row'}}>
       <View style={{alignItems:'flex-start',justifyContent:'flex-start',padding:10}}>
       <TouchableOpacity
              onPress={()=>{
-       navigation.navigate('HomeScreen');
+       props.navigation.navigate('HomeScreen');
       }}
             >
                      <Feather 
@@ -159,13 +164,16 @@ navigation.pop();
             </TouchableOpacity>
 
      </View>
+     
       <Searchbar
         placeholder="Search"
         onChangeText={onChangeSearch}
         value={value}
         style={{alignItems:'flex-end',justifyContent:'flex-end',width:365}}
       />
+      
        </View>
+       </SafeAreaView>
     );
   };
 

@@ -334,6 +334,248 @@ export async function saveInvoice(id,data){
      }
  
  }
+
+ export async function getAdminList(){
+    
+    try{
+        
  
+         const form_data = new FormData();
+         //for ( let key in data )
+           //  form_data.append('id', id);
+           //  form_data.append('doc_type', type);
+             //form_data.append('password', password);
+ 
+         let res = await axiosObj.post(`${c.GET_ADMINS}`);
+         console.log("Admin list items response====>",JSON.stringify(res));
+         return res.data;
+     }catch (e) {
+         throw handler(e);
+     }
+ 
+ }
+
+ export async function getUserList(){
+    
+    try{
+        
+ 
+         const form_data = new FormData();
+         //for ( let key in data )
+            // form_data.append('id', id);
+            // form_data.append('doc_type', type);
+             //form_data.append('password', password);
+ 
+         let res = await axiosObj.post(`${c.GET_USERS}`);
+         console.log("User items response====>",JSON.stringify(res));
+         return res.data;
+     }catch (e) {
+         throw handler(e);
+     }
+ 
+ }
+
+ export async function getAdminListSingle(id){
+    
+    try{
+        
+ 
+         const form_data = new FormData();
+         //for ( let key in data )
+             form_data.append('id', id);
+           //  form_data.append('doc_type', type);
+             //form_data.append('password', password);
+ 
+         let res = await axiosObj.post(`${c.GET_ADMINS}`,form_data);
+         console.log("Admin list items response====>",JSON.stringify(res));
+         return res.data;
+     }catch (e) {
+         throw handler(e);
+     }
+ 
+ }
+
+ export async function getUserListSingle(id){
+    
+    try{
+        
+ 
+         const form_data = new FormData();
+         //for ( let key in data )
+             form_data.append('id', id);
+            // form_data.append('doc_type', type);
+             //form_data.append('password', password);
+ 
+         let res = await axiosObj.post(`${c.GET_USERS}`,form_data);
+         console.log("User items response====>",JSON.stringify(res));
+         return res.data;
+     }catch (e) {
+         throw handler(e);
+     }
+ 
+ }
+ 
+
+ export async function addAdminProfile(adminId,data,username,company,mobileno,emailid,address,contact_person){
+    try{
+       
+        let path=data.replace('file:///','');
+       // alert(path);
+        const form_data = new FormData();
+       // for ( let key in data )
+            //form_data.append('id',id);
+            form_data.append('doc',{
+                uri: Platform.OS === 'android' ? `file:///${path}` : path,
+                type: 'image/jpeg',
+                name: 'image.jpg',
+              });
+              form_data.append('adminId',adminId);
+            form_data.append('username',username);
+            form_data.append('company',company);
+            form_data.append('mobileno',mobileno);
+            form_data.append('emailid',emailid);
+            form_data.append('address',address);
+            form_data.append('contact_person',contact_person);
+            form_data.append('createdby','28');
+            form_data.append('updatedby','28');
+            form_data.append('menu_ids','9');
+
+           //console.log("addadminpay",JSON.stringify(form_data));
+
+           
+
+        let res = await axios.post(`${c.SAVE_ADMIN}`, form_data);
+       // alert(res.message);
+        console.log(JSON.stringify(res));
+        if(res!=null)
+        {
+        return res.data;
+        }else if(res.data==""){
+            alert('something went wrong');
+
+            return null;
+        }
+    }catch (e) {
+       
+        throw handler(e);
+    }
+}
+
+export async function addMobileProfile(adminId,data,username,company,mobileno,emailid,address,contact_person){
+    try{
+       
+        let path=data.replace('file:///','');
+       // alert(path);
+        const form_data = new FormData();
+       // for ( let key in data )
+            //form_data.append('id',id);
+            form_data.append('doc',{
+                uri: Platform.OS === 'android' ? `file:///${path}` : path,
+                type: 'image/jpeg',
+                name: 'image.jpg',
+              });
+              form_data.append('adminId',adminId);
+            form_data.append('username',username);
+            form_data.append('company',company);
+            form_data.append('mobileno',mobileno);
+            form_data.append('emailid',emailid);
+            form_data.append('address',address);
+            form_data.append('contact_person',contact_person);
+            form_data.append('createdby',adminId);
+            form_data.append('updatedby',adminId);
+            form_data.append('menu_ids','5,6,7,8');
+
+           //console.log("addadminpay",JSON.stringify(form_data));
+
+           
+
+        let res = await axios.post(`${c.SAVE_MOBILE}`, form_data);
+       // alert(res.message);
+        console.log(JSON.stringify(res));
+        if(res!=null)
+        {
+        return res.data;
+        }else if(res.data==""){
+            alert('something went wrong');
+
+            return null;
+        }
+    }catch (e) {
+       
+        throw handler(e);
+    }
+
+}
+    export async function getAllMessages(){
+    
+        try{
+            
+             let res = await axiosObj.post(`${c.ALL_MSGS}`);
+             console.log("Msgs items response====>",JSON.stringify(res));
+             return res.data;
+         }catch (e) {
+             throw handler(e);
+         }
+     
+     }
+
+     export async function createMsg(id,msg,status){
+    
+        try{
+            
+     
+             const form_data = new FormData();
+             //for ( let key in data )
+                 form_data.append('userid', id);
+                 form_data.append('msg', msg);
+                 form_data.append('status', status);
+     
+             let res = await axiosObj.post(`${c.ADD_MSG}`,form_data);
+             console.log("User items response====>",JSON.stringify(res));
+             return res.data;
+         }catch (e) {
+             throw handler(e);
+         }
+     
+     }
+
+     export async function updateMessageContent(id,userid,msg){
+        try{
+           
+              const form_data = new FormData();
+             //for ( let key in data )
+                 form_data.append('id', id);
+                 form_data.append('userid', userid);
+                 form_data.append('msg', msg);
+                 //form_data.append('password', password);
+              let res = await axiosObj.post(`${c.UPDATE_MESSAGE_CONTENT}`, form_data);
+             console.log("update message item response====>",JSON.stringify(res));
+             return res.data;
+         }catch (e) {
+             throw handler(e);
+         }
+     
+     }
+    
+     export async function getUserListById(adminId){
+    
+        try{
+            
+     
+             const form_data = new FormData();
+             //for ( let key in data )
+                 form_data.append('adminId', adminId);
+                // form_data.append('doc_type', type);
+                 //form_data.append('password', password);
+     
+             let res = await axiosObj.post(`${c.GET_USERS}`,form_data);
+             console.log("User items response====>",JSON.stringify(res));
+             return res.data;
+         }catch (e) {
+             throw handler(e);
+         }
+     
+     }
+    
 
  

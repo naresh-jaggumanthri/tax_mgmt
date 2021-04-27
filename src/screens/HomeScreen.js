@@ -30,6 +30,7 @@ import RadioButtonRN from 'radio-buttons-react-native';
 import { useAuth } from "../providers/auth";
 import Loader from '../components/Loader';
 import * as api from "../api/auth";
+import { SafeAreaView } from 'react-native';
 //import {useNavigationParam} from '@react-navigation/native';
 
 const exampleImage = require('../assets/invoice22.jpg');
@@ -215,7 +216,7 @@ const HomeScreen = ({navigation,route}) => {
 
  const showhistory = () => {
    //alert('Development is in under progress.')
-   navigation.navigate('BookmarkScreen');
+   navigation.navigate('BookmarkScreen',{id:state.user.id});
    return;
  }
  const initiateSMS = () => {
@@ -340,6 +341,7 @@ onUploadImage=async()=>{
 
 
     return (
+     
       <View style={styles.container}>
       <Loader loading={loading}/>
        <BottomSheet
@@ -568,6 +570,7 @@ dialogTitle={<DialogTitle title="" />}
             
         </Animatable.View>
       </View>
+     
     );
 };
 
